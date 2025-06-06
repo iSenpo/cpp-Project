@@ -3,11 +3,88 @@
 using namespace std;
 
 string USERNAME;
-
-class User{
-    private:
+class Account{
+    protected:
     string username;
     string password;
+    public:
+    virtual bool checkUserExist(string t) = 0;
+    virtual bool CheckAccountInfo(string s,string t) = 0;
+    virtual ~Account(){}
+};
+class Admin : public Account{
+    private:
+    const int id = 41148;
+    public:
+    Admin(){
+        while(1){
+        cout<<"~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~\n"
+            <<"Enter Admin ID :('0' to go back)\n";
+        int n;
+        cin>>n;
+        if(n == -1){
+            break;
+        }
+        if(n == id){
+            cout<<"Succecfully Loged in as Admin\n";
+            break;
+        }
+        else{
+            cout<<"Invaild input, try again now :\n";
+        }
+        }
+    }
+    void ShowUers(){
+        string s,t;
+        int counter = 0;
+        ifstream file("Accounts.txt",ios::in);
+        if(!file.is_open()){
+            cerr<<"Something Wrong!\n";
+        }else{
+            cout << "Username | password\n\n";
+            while(file >> s >> t){
+                counter++;
+                cout<<counter<<"."<<s<<" : "<<t<<"\n";
+            }
+            cout<<"choose one to see thier info :('0' to go back)\n";
+            int n;
+            cin>>n;
+            if(n<0 || n>counter){
+                cout<<"out of range! going back\n";
+            }
+            else if(n == 0){
+            }
+            else{
+                this->UserInfo(n);
+            }
+        }
+        file.close();
+    }
+    void UserInfo(int a){
+        int counter = 0;
+        string s,t;
+        ifstream file("Accounts.txt",ios::in);
+        if(!file.is_open()){
+            cerr<<"Smt wrong!\n";
+        }
+        else{
+            while(file >> s >> t){
+                counter++;
+                if(counter == a){
+                    USERNAME = s;
+                }
+            }
+        }
+        file.close();
+    }
+    bool checkUserExist(string t) override{
+    return true;
+    }
+    bool CheckAccountInfo(string s,string t) override{
+   return true;
+    }  
+};
+class User:public Account{
     public:
     User(){}
     User(bool Account){
@@ -99,7 +176,7 @@ class User{
         }
         }
     }
-    bool checkUserExist(string t){
+    bool checkUserExist(string t) override{
         string s1,s2;
         ifstream file("Accounts.txt");
         if(!file.is_open()){
@@ -134,7 +211,7 @@ class User{
         }
         file.close();
     } 
-    bool CheckAccountInfo(string s,string t){
+    bool CheckAccountInfo(string s,string t) override{
         ifstream file("Accounts.txt");
         string fileUser,filePass;
         if(!file.is_open()){
@@ -356,6 +433,9 @@ class Reminder : public TaskBase{
         clearTemp.close();
         }    
     }
+    ~Reminder(){ 
+        delete this;
+    }
 };
 class ShopList : public TaskBase{
     private:
@@ -438,6 +518,9 @@ class ShopList : public TaskBase{
         clearTemp.close();
         }       
     }
+    ~ShopList(){
+        delete this;
+    }
 };
 
 
@@ -450,6 +533,7 @@ int main(){
     cout<<"~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
         <<"1.Create New Account\n"
         <<"2.Log into Existing Account\n"
+        <<"3.Administrator Login\n"
         <<"0.quit program\n"
         <<"~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
     bool loop = true;
@@ -464,6 +548,112 @@ int main(){
             }
             case (2):{
                 User* uTemp = new User(1);
+                loop = false;
+                break;
+            }
+            case (3):{
+                Admin* adminstrator = new Admin();
+                while(1){
+                    cout<<"~ - ~ - ~ - ~ - ~ - ~\n"
+                        <<"1.See All Users\n"
+                        <<"2.Log out\n"
+                        <<"0.quit program\n"
+                        <<"~ - ~ - ~ - ~ - ~ - ~\n";
+                    int choice;
+                    cin>>choice;
+                    switch(choice){
+                        case(1):{
+                            bool adminLoop = true;
+                            adminstrator->ShowUers();
+                            while(adminLoop){
+                                 cout<<"~ - ~ - ~ - ~ - ~ - ~\n"
+                                    <<"1.Show User Todo-List\n"
+                                    <<"2.Show User Reminders\n"
+                                    <<"3.Show User Shop List\n"
+                                    <<"4.Go Back\n"
+                                    <<"0.quit program\n"
+                                    <<"~ - ~ - ~ - ~ - ~ - ~\n";
+                                    int choice;
+                                    cin>>choice;
+                                    switch(choice){
+                                        case(1):{
+                                            string t;
+                                            int ul = 0;
+                                            cout<<USERNAME<<" Todo-List:\n";
+                                            ifstream file(USERNAME + "_TodoList.txt",ios::in);
+                                            if(!file.is_open()){
+                                                cerr<<"something went wrong!\n";
+                                            }
+                                            else{
+                                                while(getline(file,t)){
+                                                    ul++;
+                                                    cout<<ul<<"."<<t<<"\n";
+                                                }
+                                                cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
+                                            }
+                                            file.close();
+                                            break;
+                                        }
+                                        case(2):{
+                                            string t;
+                                            int ul = 0;
+                                            cout<<USERNAME<<" Reminder List:\n";
+                                            ifstream file(USERNAME + "_Reminders.txt",ios::in);
+                                            if(!file.is_open()){
+                                                cerr<<"something went wrong!\n";
+                                            }
+                                            else{
+                                                while(getline(file,t)){
+                                                    ul++;
+                                                    cout<<ul<<"."<<t<<"\n";
+                                                }
+                                                cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
+                                            }
+                                            file.close();
+                                            break;
+                                        }
+                                        case(3):{
+                                            string t;
+                                            int ul = 0;
+                                            cout<<USERNAME<<" Shopping List:\n";
+                                            ifstream file(USERNAME + "_ShopList.txt",ios::in);
+                                            if(!file.is_open()){
+                                                cerr<<"something went wrong!\n";
+                                            }
+                                            else{
+                                                while(getline(file,t)){
+                                                    ul++;
+                                                    cout<<ul<<"."<<t<<"\n";
+                                                }
+                                                cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
+                                            }
+                                            file.close();
+                                            break;
+                                        }
+                                        case(4):{
+                                            break;
+                                        }
+                                        case(0):{
+                                            cout<<"\nClosing Program... bye bye!";
+                                            return 0;
+                                        }
+                                        default:{
+                                            cout<<"Invalid Input! try again now :\n";
+                                            break;
+                                        }
+                                    }
+                                    }
+                            break;
+                        }
+                        case(2):{
+                            break;
+                        }
+                        case(0):{
+                            cout<<"\nClosing Program... bye bye!";
+                            return 0;
+                        }
+                    }
+                }
                 loop = false;
                 break;
             }
