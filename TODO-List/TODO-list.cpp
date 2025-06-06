@@ -87,6 +87,12 @@ class User{
                 cout<<"~ ~ ~ Succecfully Loged in ~ ~ ~\n";
                 username = u;
                 USERNAME = u;
+                fstream file1(USERNAME + "_TodoList.txt",ios::app);
+                file1.close();
+                fstream file2(USERNAME + "_Reminders.txt",ios::app);
+                file2.close();
+                fstream file3(USERNAME + "_ShopList.txt",ios::app);
+                file3.close();
                 password = p;
                 loop = false;
             }
@@ -112,6 +118,12 @@ class User{
     void CreateAccount(string a,string b){
         username = a;
         USERNAME = a;
+        fstream file1(USERNAME + "_TodoList.txt",ios::app);
+        file1.close();
+        fstream file2(USERNAME + "_Reminders.txt",ios::app);
+        file2.close();
+        fstream file3(USERNAME + "_ShopList.txt",ios::app);
+        file3.close();
         password = b;
         fstream file("Accounts.txt",ios::app);
         if(file.is_open()){
@@ -188,9 +200,11 @@ class TodoList : public TaskBase{
         }
         else{
             cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
-            if(file){
+            file.seekg(0,ios::end);
+            if(file.tellg() == 0){
                 cout<<"Your List is Empty!\n";
             }
+            file.seekg(0);
             while(getline(file,t)){
                 cout<<ul<<"."<<t<<"\n";
                 ul++;  
@@ -209,7 +223,7 @@ class TodoList : public TaskBase{
             cin.ignore();
             getline(cin,t);
             file << t << "\n";
-            cout<< "Task Succecfully added! \n";
+            cout<< "~ ~ Task Succecfully added ~ ~\n";
         }
         file.close();
     }
@@ -227,26 +241,31 @@ class TodoList : public TaskBase{
 
         }
         else{
-            fstream file(USERNAME + "TodoList.txt",ios::in | ios::out);
-            fstream temp("temp.txt",ios::in | ios::out);
-            if((file.is_open()) && (temp.is_open())){
-
-                while(getline(file,s)){
+            ifstream fileIn(USERNAME + "_TodoList.txt");
+            ofstream tempOut("temp.txt");
+            if(fileIn.is_open() && tempOut.is_open()){
+                while(getline(fileIn,s)){
                     counter++;
-                    if(line == counter){
-                        continue;
+                    if(line != counter){
+                        tempOut << s << "\n";
                     }
-                    temp << s << "\n";
                 }
-                file.seekg(0);
-                while(getline(temp,s)){
-                    file << s << "\n";
-                }
+                fileIn.close();
+                tempOut.close();
+            ifstream tempIn("temp.txt");
+            ofstream fileOut(USERNAME + "_TodoList.txt");
+            while(getline(tempIn,s)){
+                fileOut << s << "\n";
+            }
+            cout<<"# # # Task succecfully deleted! # # #\n";
+            tempIn.close();
+            fileOut.close();
             }
             else{
                 cerr<<"Something went Wrong!\n";
-                }
-           file.close();
+            }
+        ofstream clearTemp("temp.txt",ios::trunc);
+        clearTemp.close();
         }
     }
 
@@ -256,33 +275,168 @@ class TodoList : public TaskBase{
 };
 class Reminder : public TaskBase{
     private:
-    string name;
+    string t;
     int CreationDate;
     int ExpireDate;
     public:
     void ShowInfo() override{
-
+        int ul = 1;
+        ifstream file ( USERNAME + "_Reminders.txt",ios::in);
+        if(!file.is_open()){
+            cerr<<"Semething went wrong!\n";
+        }
+        else{
+            cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
+            file.seekg(0,ios::end);
+            if(file.tellg() == 0){
+                cout<<"Your List is Empty!\n";
+            }
+            file.seekg(0);
+            while(getline(file,t)){
+                cout<<ul<<"."<<t<<"\n";
+                ul++;  
+            }
+            cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
+        }
+        file.close();
     }
     void AddItem() override{
-
+        fstream file( USERNAME + "_Reminders.txt",ios::app);
+        if(!file.is_open()){
+            cerr<<"Something went wrong!\n";
+        }
+        else{
+            cout<<"Enter your new Reminder : \n";
+            cin.ignore();
+            getline(cin,t);
+            file << t << "\n";
+            cout<< "~ ~ Reminder Succecfully added ~ ~\n";
+        }
+        file.close();   
     }
     void DeleteItem() override{
+    
+        int line,counter = 0;
+        string s;
+        cout<<"Which REMINDER you want to DELETE?('0' to see list / '-1' to go back)\n";
+        cin >> line;
+        if(line == 0){
+            this->ShowInfo();
+            cout<<"Which REMINDER you want to DELETE?('0' to see list / '-1' to go back)\n";
+            cin >> line;
+        }
+        if(line == -1){
 
+        }
+        else{
+            ifstream fileIn(USERNAME + "_Reminders.txt");
+            ofstream tempOut("temp.txt");
+            if(fileIn.is_open() && tempOut.is_open()){
+                while(getline(fileIn,s)){
+                    counter++;
+                    if(line != counter){
+                        tempOut << s << "\n";
+                    }
+                }
+                fileIn.close();
+                tempOut.close();
+            ifstream tempIn("temp.txt");
+            ofstream fileOut(USERNAME + "_Reminders.txt");
+            while(getline(tempIn,s)){
+                fileOut << s << "\n";
+            }
+            cout<<"# # # Reminder succecfully deleted! # # #\n";
+            tempIn.close();
+            fileOut.close();
+            }
+            else{
+                cerr<<"Something went Wrong!\n";
+            }
+        ofstream clearTemp("temp.txt",ios::trunc);
+        clearTemp.close();
+        }    
     }
 };
 class ShopList : public TaskBase{
     private:
     int price;
-    string name;
+    string t;
     public:
     void ShowInfo() override{
-
+     int ul = 1;
+        ifstream file ( USERNAME + "_ShopList.txt",ios::in);
+        if(!file.is_open()){
+            cerr<<"Semething went wrong!\n";
+        }
+        else{
+            cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
+            file.seekg(0,ios::end);
+            if(file.tellg() == 0){
+                cout<<"Your List is Empty!\n";
+            }
+            file.seekg(0);
+            while(getline(file,t)){
+                cout<<ul<<"."<<t<<"\n";
+                ul++;  
+            }
+            cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
+        }
+        file.close();
     }
     void AddItem() override{
-
+        fstream file( USERNAME + "_ShopList.txt",ios::app);
+        if(!file.is_open()){
+            cerr<<"Something went wrong!\n";
+        }
+        else{
+            cout<<"Enter your new Item : \n";
+            cin.ignore();
+            getline(cin,t);
+            file << t << "\n";
+            cout<< "~ ~ Item Succecfully added ~ ~\n";
+        }
+        file.close();      
     }
     void DeleteItem() override{
+        int line,counter = 0;
+        string s;
+        cout<<"Which ITEM you want to DELETE?('0' to see list / '-1' to go back)\n";
+        cin >> line;
+        if(line == 0){
+            this->ShowInfo();
+            cout<<"Which ITEM you want to DELETE?('0' to see list / '-1' to go back)\n";
+            cin >> line;
+        }
+        if(line == -1){
 
+        }
+        else{
+            ifstream fileIn(USERNAME + "_ShopList.txt");
+            ofstream tempOut("temp.txt");
+            if(fileIn.is_open() && tempOut.is_open()){
+                while(getline(fileIn,s)){
+                    counter++;
+                    if(line != counter){
+                        tempOut << s << "\n";
+                    }
+                }
+                fileIn.close();
+                tempOut.close();
+            ifstream tempIn("temp.txt");
+            ofstream fileOut(USERNAME + "_ShopList.txt");
+            while(getline(tempIn,s)){
+                fileOut << s << "\n";
+            }
+            cout<<"# # # ITEM succecfully deleted! # # #\n";
+            tempIn.close();
+            fileOut.close();
+            }
+            else{
+                cerr<<"Something went Wrong!\n";
+            }
+        ofstream clearTemp("temp.txt",ios::trunc);
+        clearTemp.close();
+        }       
     }
 };
 
@@ -377,8 +531,8 @@ int main(){
                 while(loop2){
                     cout<<"~ ~ ~ ~ ~ ~ REMINDER ~ ~ ~ ~ ~ ~\n"
                         <<"1.Show My Reminder LIST\n"
-                        <<"2.Add a new Task to my List\n"
-                        <<"3.Delete an existing Task\n"
+                        <<"2.Add a new Reminder to my List\n"
+                        <<"3.Delete an existing Reminder\n"
                         <<"4.Back\n"
                         <<"0.quit program\n"
                         <<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
