@@ -5,7 +5,7 @@ using namespace std;
 string USERNAME;
 
 class User{
-    protected:
+    private:
     string username;
     string password;
     public:
@@ -446,6 +446,7 @@ int main(){
     Task[0] = new TodoList;
     Task[1] = new Reminder;
     Task[2] = new ShopList;
+    while(1){
     cout<<"~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
         <<"1.Create New Account\n"
         <<"2.Log into Existing Account\n"
@@ -601,7 +602,8 @@ int main(){
                 break;
             }
             case (4):{
-                main();
+                loop = false;
+                break;
             }
             case (0):{
                 cout<<"\nClosing Program... bye bye!";
@@ -613,5 +615,6 @@ int main(){
             }
         }
     }
+}
     return 0;
 }
