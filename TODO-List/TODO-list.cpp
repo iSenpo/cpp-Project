@@ -97,7 +97,7 @@ class User{
         string s1,s2;
         ifstream file("Accounts.txt");
         if(!file.is_open()){
-        cerr<<"Something Went wrong!";
+        cerr<<"Something Went wrong!\n";
         }
         else{
             while(file >> s1 >> s2){
@@ -118,7 +118,7 @@ class User{
             file<<username<<" "<<password<<"\n";
         }
         else{
-            cerr<<"could not open file!";
+            cerr<<"could not open file!\n";
         }
         file.close();
     } 
@@ -126,7 +126,7 @@ class User{
         ifstream file("Accounts.txt");
         string fileUser,filePass;
         if(!file.is_open()){
-            cerr<<"Something Went wrong!";
+            cerr<<"Something Went wrong!\n";
         }
         else{
             while(file >> fileUser >> filePass){
@@ -175,16 +175,16 @@ class TaskBase{
     virtual void DeleteItem() = 0;
     virtual ~TaskBase(){}
 };
-class TodoList : public TaskBase,public User{
+class TodoList : public TaskBase{
     private:
     string t;
     public:
-    TodoList() : User(){}
+    TodoList(){}
     void ShowInfo() override{
         int ul = 1;
         ifstream file ( USERNAME + "_TodoList.txt",ios::in);
         if(!file.is_open()){
-            cerr<<"Semething went wrong!";
+            cerr<<"Semething went wrong!\n";
         }
         else{
             cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
@@ -202,7 +202,7 @@ class TodoList : public TaskBase,public User{
     void AddItem() override{
         fstream file( USERNAME + "_TodoList.txt",ios::app);
         if(!file.is_open()){
-            cerr<<"Something went wrong!";
+            cerr<<"Something went wrong!\n";
         }
         else{
             cout<<"Enter your task : \n";
@@ -216,32 +216,43 @@ class TodoList : public TaskBase,public User{
     void DeleteItem() override{
         int line,counter = 0;
         string s;
-        cout<<"Which TASK you want to DELETE?(-1 to see list)\n";
+        cout<<"Which TASK you want to DELETE?('0' to see list / '-1' to go back)\n";
         cin >> line;
-        if(line == -1){
+        if(line == 0){
             this->ShowInfo();
-            cout<<"Which TASK you want to DELETE?(-1 to see list)\n";
+            cout<<"Which TASK you want to DELETE?('0' to see list / '-1' to go back)\n";
             cin >> line;
         }
-        fstream file(USERNAME + "TodoList.txt",ios::in | ios::out | ios::app);
-        if(!file.is_open()){
-            cerr<<"Something went Wrong!";
+        if(line == -1){
+
         }
         else{
-            while(getline(file,s)){
-                counter++;
-                if(line == counter){
-                    continue;
+            fstream file(USERNAME + "TodoList.txt",ios::in | ios::out);
+            fstream temp("temp.txt",ios::in | ios::out);
+            if((file.is_open()) && (temp.is_open())){
+
+                while(getline(file,s)){
+                    counter++;
+                    if(line == counter){
+                        continue;
+                    }
+                    temp << s << "\n";
                 }
-                file << s << "\n";
+                file.seekg(0);
+                while(getline(temp,s)){
+                    file << s << "\n";
+                }
             }
+            else{
+                cerr<<"Something went Wrong!\n";
+                }
+           file.close();
         }
-        
     }
+
     ~TodoList(){
         delete this;
     }
-    friend class User;
 };
 class Reminder : public TaskBase{
     private:
@@ -312,15 +323,15 @@ int main(){
 
         }
     }
-    cout<<"~~~~~~~~~~~~~ Main Menu ~~~~~~~~~~~~~\n"
-        <<"1.Go to my TODO-List Menu\n"
-        <<"2.Go to my Reminder Menu\n"
-        <<"3.Go to my Shoping List Menu\n"
-        <<"4.Log Out\n"
-        <<"0.quit program\n"
-        <<"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
     loop = true;
     while(loop){
+        cout<<"~~~~~~~~~~~~~ Main Menu ~~~~~~~~~~~~~\n"
+            <<"1.Go to my TODO-List Menu\n"
+            <<"2.Go to my Reminder Menu\n"
+            <<"3.Go to my Shopping List Menu\n"
+            <<"4.Log Out\n"
+            <<"0.quit program\n"
+            <<"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
         int choice;
         cin>>choice;
         switch(choice){
@@ -359,6 +370,7 @@ int main(){
                         }
                     }
                 }
+                break;
             }
             case (2):{
                 bool loop2 = true;
@@ -395,12 +407,13 @@ int main(){
                         }
                     }
                 }
+                break;
             }
             case (3):{
                 bool loop3 = true;
                 while(loop3){
-                    cout<<"~ ~ ~ ~ ~ ~ SHOPING-LIST ~ ~ ~ ~ ~ ~\n"
-                        <<"1.Show My Shoping List\n"
+                    cout<<"~ ~ ~ ~ ~ ~ Shopping-LIST ~ ~ ~ ~ ~ ~\n"
+                        <<"1.Show My Shopping List\n"
                         <<"2.Add a new Item to my List\n"
                         <<"3.Delete an existing Item\n"
                         <<"4.Back\n"
@@ -431,6 +444,7 @@ int main(){
                         }
                     }
                 }
+                break;
             }
             case (4):{
                 main();
@@ -440,7 +454,8 @@ int main(){
                 return 0;
             }
             default:{
-
+                cout<<"Invalid choice! try again: \n";
+                break;
             }
         }
     }

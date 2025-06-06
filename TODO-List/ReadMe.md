@@ -1,1 +1,0 @@
-![](blob:https://web.telegram.org/6f833722-59fc-4292-8023-efa98cce6d80)
