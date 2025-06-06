@@ -2,6 +2,8 @@
 #include <fstream>
 using namespace std;
 
+string USERNAME;
+
 class User{
     protected:
     string username;
@@ -84,6 +86,7 @@ class User{
             else{
                 cout<<"~ ~ ~ Succecfully Loged in ~ ~ ~\n";
                 username = u;
+                USERNAME = u;
                 password = p;
                 loop = false;
             }
@@ -108,6 +111,7 @@ class User{
     }
     void CreateAccount(string a,string b){
         username = a;
+        USERNAME = a;
         password = b;
         fstream file("Accounts.txt",ios::app);
         if(file.is_open()){
@@ -174,17 +178,19 @@ class TaskBase{
 class TodoList : public TaskBase,public User{
     private:
     string t;
-    string name;
     public:
     TodoList() : User(){}
     void ShowInfo() override{
         int ul = 1;
-        ifstream file ( name + "_TodoList.txt",ios::in);
+        ifstream file ( USERNAME + "_TodoList.txt",ios::in);
         if(!file.is_open()){
             cerr<<"Semething went wrong!";
         }
         else{
             cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
+            if(file){
+                cout<<"Your List is Empty!\n";
+            }
             while(getline(file,t)){
                 cout<<ul<<"."<<t<<"\n";
                 ul++;  
@@ -194,7 +200,7 @@ class TodoList : public TaskBase,public User{
         file.close();
     }
     void AddItem() override{
-        fstream file( username + "_TodoList.txt",ios::app);
+        fstream file( USERNAME + "_TodoList.txt",ios::app);
         if(!file.is_open()){
             cerr<<"Something went wrong!";
         }
@@ -208,7 +214,29 @@ class TodoList : public TaskBase,public User{
         file.close();
     }
     void DeleteItem() override{
-
+        int line,counter = 0;
+        string s;
+        cout<<"Which TASK you want to DELETE?(-1 to see list)\n";
+        cin >> line;
+        if(line == -1){
+            this->ShowInfo();
+            cout<<"Which TASK you want to DELETE?(-1 to see list)\n";
+            cin >> line;
+        }
+        fstream file(USERNAME + "TodoList.txt",ios::in | ios::out | ios::app);
+        if(!file.is_open()){
+            cerr<<"Something went Wrong!";
+        }
+        else{
+            while(getline(file,s)){
+                counter++;
+                if(line == counter){
+                    continue;
+                }
+                file << s << "\n";
+            }
+        }
+        
     }
     ~TodoList(){
         delete this;
@@ -258,7 +286,7 @@ int main(){
         <<"2.Log into Existing Account\n"
         <<"0.quit program\n"
         <<"~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
-        bool loop = true;
+    bool loop = true;
     while(loop){
         int choice;
         cin>>choice;
@@ -318,7 +346,8 @@ int main(){
                            break;
                         }
                         case (3):{
-
+                            Task[0]->DeleteItem();
+                            break;
                         }
                         case (4):{
                             loop1 = false;
@@ -332,10 +361,76 @@ int main(){
                 }
             }
             case (2):{
-
+                bool loop2 = true;
+                while(loop2){
+                    cout<<"~ ~ ~ ~ ~ ~ REMINDER ~ ~ ~ ~ ~ ~\n"
+                        <<"1.Show My Reminder LIST\n"
+                        <<"2.Add a new Task to my List\n"
+                        <<"3.Delete an existing Task\n"
+                        <<"4.Back\n"
+                        <<"0.quit program\n"
+                        <<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
+                    int choice1;
+                    cin>>choice1;
+                    switch(choice1){
+                        case (1):{
+                            Task[1]->ShowInfo();
+                            break;
+                        }
+                        case (2):{
+                           Task[1]->AddItem();
+                           break;
+                        }
+                        case (3):{
+                            Task[1]->DeleteItem();
+                            break;
+                        }
+                        case (4):{
+                            loop2 = false;
+                            break;
+                        }
+                        case (0):{
+                            cout<<"\nClosing Program... bye bye!";
+                            return 0;
+                        }
+                    }
+                }
             }
             case (3):{
-
+                bool loop3 = true;
+                while(loop3){
+                    cout<<"~ ~ ~ ~ ~ ~ SHOPING-LIST ~ ~ ~ ~ ~ ~\n"
+                        <<"1.Show My Shoping List\n"
+                        <<"2.Add a new Item to my List\n"
+                        <<"3.Delete an existing Item\n"
+                        <<"4.Back\n"
+                        <<"0.quit program\n"
+                        <<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
+                    int choice1;
+                    cin>>choice1;
+                    switch(choice1){
+                        case (1):{
+                            Task[2]->ShowInfo();
+                            break;
+                        }
+                        case (2):{
+                           Task[2]->AddItem();
+                           break;
+                        }
+                        case (3):{
+                            Task[2]->DeleteItem();
+                            break;
+                        }
+                        case (4):{
+                            loop3 = false;
+                            break;
+                        }
+                        case (0):{
+                            cout<<"\nClosing Program... bye bye!";
+                            return 0;
+                        }
+                    }
+                }
             }
             case (4):{
                 main();
