@@ -252,9 +252,6 @@ bool isPassword(string s){
     }
     return true;
 }
-    ~User(){
-        delete this;
-    }
 };
   
 class TaskBase{
@@ -345,10 +342,6 @@ class TodoList : public TaskBase{
         clearTemp.close();
         }
     }
-
-    ~TodoList(){
-        delete this;
-    }
 };
 class Reminder : public TaskBase{
     private:
@@ -433,9 +426,6 @@ class Reminder : public TaskBase{
         clearTemp.close();
         }    
     }
-    ~Reminder(){ 
-        delete this;
-    }
 };
 class ShopList : public TaskBase{
     private:
@@ -518,9 +508,6 @@ class ShopList : public TaskBase{
         clearTemp.close();
         }       
     }
-    ~ShopList(){
-        delete this;
-    }
 };
 
 
@@ -552,8 +539,9 @@ int main(){
                 break;
             }
             case (3):{
+                bool adLoop = true;
                 Admin* adminstrator = new Admin();
-                while(1){
+                while(adLoop){
                     cout<<"~ - ~ - ~ - ~ - ~ - ~\n"
                         <<"1.See All Users\n"
                         <<"2.Log out\n"
@@ -563,6 +551,7 @@ int main(){
                     cin>>choice;
                     switch(choice){
                         case(1):{
+
                             bool adminLoop = true;
                             adminstrator->ShowUers();
                             while(adminLoop){
@@ -579,6 +568,7 @@ int main(){
                                         case(1):{
                                             string t;
                                             int ul = 0;
+                                            cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
                                             cout<<USERNAME<<" Todo-List:\n";
                                             ifstream file(USERNAME + "_TodoList.txt",ios::in);
                                             if(!file.is_open()){
@@ -597,6 +587,7 @@ int main(){
                                         case(2):{
                                             string t;
                                             int ul = 0;
+                                            cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
                                             cout<<USERNAME<<" Reminder List:\n";
                                             ifstream file(USERNAME + "_Reminders.txt",ios::in);
                                             if(!file.is_open()){
@@ -615,6 +606,7 @@ int main(){
                                         case(3):{
                                             string t;
                                             int ul = 0;
+                                            cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
                                             cout<<USERNAME<<" Shopping List:\n";
                                             ifstream file(USERNAME + "_ShopList.txt",ios::in);
                                             if(!file.is_open()){
@@ -631,6 +623,7 @@ int main(){
                                             break;
                                         }
                                         case(4):{
+                                            adminLoop= false;
                                             break;
                                         }
                                         case(0):{
@@ -642,10 +635,11 @@ int main(){
                                             break;
                                         }
                                     }
-                                    }
+                                }
                             break;
                         }
                         case(2):{
+                            adLoop = false;
                             break;
                         }
                         case(0):{
