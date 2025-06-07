@@ -509,8 +509,6 @@ class ShopList : public TaskBase{
         }       
     }
 };
-
-
 int main(){
     TaskBase* Task[3];
     Task[0] = new TodoList;
@@ -799,6 +797,6 @@ int main(){
             }
         }
     }
-}
+}   
     return 0;
 }
