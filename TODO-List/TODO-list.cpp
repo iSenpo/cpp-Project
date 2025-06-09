@@ -528,11 +528,13 @@ int main(){
         switch (choice){
             case (1):{
                 User* uTemp = new User(0);
+                delete uTemp;
                 loop = false;
                 break;
             }
             case (2):{
                 User* uTemp = new User(1);
+                delete uTemp;
                 loop = false;
                 break;
             }
