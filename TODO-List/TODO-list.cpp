@@ -3,6 +3,7 @@
 using namespace std;
 
 string USERNAME;
+
 class Account{
     protected:
     string username;
@@ -259,11 +260,13 @@ class TaskBase{
     virtual void ShowInfo() = 0;
     virtual void AddItem() = 0;
     virtual void DeleteItem() = 0;
+    virtual void Completed(int n) = 0;
     virtual ~TaskBase(){}
 };
 class TodoList : public TaskBase{
     private:
     string t;
+    bool completed = false;
     public:
     TodoList(){}
     void ShowInfo() override{
@@ -280,6 +283,15 @@ class TodoList : public TaskBase{
             }
             file.seekg(0);
             while(getline(file,t)){
+                if(t[t.size()-1] == '1'){
+                    cout<<ul<<".[";
+                    for(int i = 0; i < t.size()-2 ;i++){
+                       cout<<t[i];
+                    }
+                    cout<<"] Done.\n";
+                    ul++;
+                    continue;
+                }
                 cout<<ul<<"."<<t<<"\n";
                 ul++;  
             }
@@ -341,6 +353,39 @@ class TodoList : public TaskBase{
         ofstream clearTemp("temp.txt",ios::trunc);
         clearTemp.close();
         }
+    }
+    void Completed(int n) override{
+        string s;
+        int counter = 1;
+        ifstream fileIn(USERNAME + "_TodoList.txt");
+        ofstream tempOut("temp.txt");
+            if(fileIn.is_open() && tempOut.is_open()){
+                while(getline(fileIn,s)){
+                        tempOut << s << "\n";
+                }
+                fileIn.close();
+                tempOut.close();
+            ifstream tempIn("temp.txt");
+            ofstream fileOut(USERNAME + "_TodoList.txt");
+            while(getline(tempIn,s)){
+                if(counter == n){
+                    fileOut << s << " 1\n";
+                    counter++;
+                    continue;
+                }
+                fileOut << s << "\n";
+                counter++;
+            }
+            tempIn.close();
+            fileOut.close();
+            }
+            else{
+                cerr<<"Something went Wrong!\n";
+            }
+        ofstream clearTemp("temp.txt",ios::trunc);
+        clearTemp.close();
+       cout << "~ ~ Succecfuly marked as Completed ~ ~\n";
+       
     }
 };
 class Reminder : public TaskBase{
@@ -426,6 +471,7 @@ class Reminder : public TaskBase{
         clearTemp.close();
         }    
     }
+    void Completed(int n) override{}
 };
 class ShopList : public TaskBase{
     private:
@@ -508,12 +554,13 @@ class ShopList : public TaskBase{
         clearTemp.close();
         }       
     }
+    void Completed(int n) override{}
 };
 int main(){
-    TaskBase* Task[3];
-    Task[0] = new TodoList;
-    Task[1] = new Reminder;
-    Task[2] = new ShopList;
+    TaskBase* List[3];
+    List[0] = new TodoList;
+    List[1] = new Reminder;
+    List[2] = new ShopList;
     while(1){
     cout<<"~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
         <<"1.Create New Account\n"
@@ -681,25 +728,33 @@ int main(){
                         <<"1.Show My TODO-LIST\n"
                         <<"2.Add a new Task to my List\n"
                         <<"3.Delete an existing Task\n"
-                        <<"4.Back\n"
+                        <<"4.Mark a Task as Completed\n"
+                        <<"5.Back\n"
                         <<"0.quit program\n"
                         <<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
                     int choice1;
                     cin>>choice1;
                     switch(choice1){
                         case (1):{
-                            Task[0]->ShowInfo();
+                            List[0]->ShowInfo();
                             break;
                         }
                         case (2):{
-                           Task[0]->AddItem();
+                           List[0]->AddItem();
                            break;
                         }
                         case (3):{
-                            Task[0]->DeleteItem();
+                            List[0]->DeleteItem();
                             break;
                         }
                         case (4):{
+                            cout << "Which task have you Completed ?  ";
+                            int n;
+                            cin >> n;
+                            List[0]->Completed(n);
+                            break;
+                        }
+                        case (5):{
                             loop1 = false;
                             break;
                         }
@@ -725,15 +780,15 @@ int main(){
                     cin>>choice1;
                     switch(choice1){
                         case (1):{
-                            Task[1]->ShowInfo();
+                            List[1]->ShowInfo();
                             break;
                         }
                         case (2):{
-                           Task[1]->AddItem();
+                           List[1]->AddItem();
                            break;
                         }
                         case (3):{
-                            Task[1]->DeleteItem();
+                            List[1]->DeleteItem();
                             break;
                         }
                         case (4):{
@@ -762,15 +817,15 @@ int main(){
                     cin>>choice1;
                     switch(choice1){
                         case (1):{
-                            Task[2]->ShowInfo();
+                            List[2]->ShowInfo();
                             break;
                         }
                         case (2):{
-                           Task[2]->AddItem();
+                           List[2]->AddItem();
                            break;
                         }
                         case (3):{
-                            Task[2]->DeleteItem();
+                            List[2]->DeleteItem();
                             break;
                         }
                         case (4):{
