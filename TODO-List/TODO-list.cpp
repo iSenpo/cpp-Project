@@ -441,7 +441,7 @@ class Reminder : public TaskBase{
             cin >> line;
         }
         if(line == -1){
-
+            
         }
         else{
             ifstream fileIn(USERNAME + "_Reminders.txt");
@@ -475,7 +475,7 @@ class Reminder : public TaskBase{
 };
 class ShopList : public TaskBase{
     private:
-    int price;
+    float price;
     string t;
     public:
     void ShowInfo() override{
@@ -508,7 +508,9 @@ class ShopList : public TaskBase{
             cout<<"Enter your new Item : \n";
             cin.ignore();
             getline(cin,t);
-            file << t << "\n";
+            cout<<"What's it's Price ? \n";
+            cin >> price;
+            file << t <<" "<<price<< "$\n";
             cout<< "~ ~ Item Succecfully added ~ ~\n";
         }
         file.close();      
@@ -529,7 +531,7 @@ class ShopList : public TaskBase{
         else{
             ifstream fileIn(USERNAME + "_ShopList.txt");
             ofstream tempOut("temp.txt");
-            if(fileIn.is_open() && tempOut.is_open()){
+            if((fileIn.is_open()) && (tempOut.is_open())){
                 while(getline(fileIn,s)){
                     counter++;
                     if(line != counter){
@@ -574,13 +576,13 @@ int main(){
         cin>>choice;
         switch (choice){
             case (1):{
-                User* uTemp = new User(0);
+                Account* uTemp = new User(0);
                 delete uTemp;
                 loop = false;
                 break;
             }
             case (2):{
-                User* uTemp = new User(1);
+                Account* uTemp = new User(1);
                 delete uTemp;
                 loop = false;
                 break;
@@ -855,5 +857,8 @@ int main(){
         }
     }
 }   
+    delete List[0];
+    delete List[1];
+    delete List[2];
     return 0;
 }
