@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <ctime>
 using namespace std;
 
 string USERNAME;
@@ -39,6 +40,9 @@ public:
         file2.close();
         fstream file3(USERNAME+"_ShopList.txt",ios::app);
         file3.close();
+    }
+    ~Account(){
+        USERNAME = "";
     }
 };
 class Admin:public Account{
@@ -414,6 +418,9 @@ public:
     }
 };
 class Reminder:public TaskBase{
+private:
+    time_t now = time(nullptr);
+    int hour=0 , minute=0 , second=0;
 public:
     string t,s;
     Reminder(){}
@@ -897,7 +904,9 @@ int main(){
             }
             case (3):{
                 account = new Admin;
-                start.AdminMenu();
+                if(USERNAME != ""){
+                    start.AdminMenu();
+                }
                 delete account;
                 break;
             }
