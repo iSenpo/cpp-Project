@@ -186,9 +186,6 @@ public:
             cout<<"~ ~ ~ ~ PASSWORD Accepted ~ ~ ~ ~\n";
             break;
         }
-        cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n"
-            <<"~ ~ ~ Account Successfully Created ~ ~ ~\n"
-            <<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
         USERNAME = username;
         CreateFiles();
         ofstream file("Accounts.txt",ios::out | ios::app);
@@ -220,9 +217,6 @@ public:
             }
             break;
         }
-        cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n"
-            <<"~ ~ ~ ~ Successfully Loged In ~ ~ ~ ~\n"
-            <<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
         USERNAME = username;
         CreateFiles();
     }
@@ -272,18 +266,22 @@ public:
             cin>>choice;
             switch(choice){
                 case (1):{
+                    system("cls");
                     this->ShowItems();
                     break;
                 }
                 case (2):{
+                    system("cls");
                     this->AddItem();
                     break;
                 }
                 case (3):{
+                    system("cls");
                     this->DeleteItem();
                     break;
                 }
                 case (4):{
+                    system("cls");
                     cout << "Which task have you Completed ?  ";
                     int n;
                     cin >> n;
@@ -291,11 +289,12 @@ public:
                     break;
                 }
                 case (5):{
+                    system("cls");
                     loop = false;
                     break;
                 }
                 default :{
-                    cout <<"invalid option! try again :";
+                    cout <<"invalid option! try again :\n";
                     break;
                 }
             }
@@ -438,18 +437,22 @@ public:
             cin>>choice;
             switch(choice){
                 case (1):{
+                    system("cls");
                     this->ShowItems();
                     break;
                 }
                 case (2):{
+                    system("cls");
                     this->AddItem();
                     break;
                 }
                 case (3):{
+                    system("cls");
                     this->DeleteItem();
                     break;
                 }
                 case (4):{
+                    system("cls");
                     cout << "Which task have you Completed ?  ";
                     int n;
                     cin >> n;
@@ -457,11 +460,12 @@ public:
                     break;
                 }
                 case (5):{
+                    system("cls");
                     loop = false;
                     break;
                 }
                 default :{
-                    cout <<"invalid option! try again :";
+                    cout <<"invalid option! try again :\n";
                     break;
                 }
             }
@@ -600,18 +604,22 @@ public:
             cin>>choice;
             switch(choice){
                 case (1):{
+                    system("cls");
                     this->ShowItems();
                     break;
                 }
                 case (2):{
+                    system("cls");
                     this->AddItem();
                     break;
                 }
                 case (3):{
+                    system("cls");
                     this->DeleteItem();
                     break;
                 }
                 case (4):{
+                    system("cls");
                     cout << "Which task have you Completed ?  ";
                     int n;
                     cin >> n;
@@ -619,11 +627,12 @@ public:
                     break;
                 }
                 case (5):{
+                    system("cls");
                     loop = false;
                     break;
                 }
                 default :{
-                    cout <<"invalid option! try again :";
+                    cout <<"invalid option! try again :\n";
                     break;
                 }
             }
@@ -766,22 +775,27 @@ void ClientMenu(){
         cin>>choice;
         switch(choice){
             case (1):{
+                system("cls");
                 List[0]->ListMenu();
                 break;
             }
             case (2):{
+                system("cls");
                 List[1]->ListMenu();
                 break;
             }
             case (3):{
+                system("cls");
                 List[2]->ListMenu();
                 break;
             }
             case (4):{
+                system("cls");
                 loop = false;
                 break;
             }
             case (0):{
+                system("cls");
                 EXIT = true;
                 loop = false;
                 break;
@@ -892,18 +906,21 @@ int main(){
         switch (choice){
             case (1):{ 
                 account = new SignUp;
+                system("cls");
                 start.ClientMenu();
                 delete account;     
                 break;
             }
             case (2):{
                 account = new LogIn;
+                system("cls");
                 start.ClientMenu();
                 delete account;     
                 break;
             }
             case (3):{
                 account = new Admin;
+                system("cls");
                 if(USERNAME != ""){
                     start.AdminMenu();
                 }
@@ -911,6 +928,7 @@ int main(){
                 break;
             }
             case (0):{
+                system("cls");
                 cout << "Closing Program!";
                 return 0;
                 break;
