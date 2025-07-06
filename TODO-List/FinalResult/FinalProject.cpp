@@ -138,8 +138,9 @@ public:
     SignUp(){
         string pass2;
         cout << "Enter your USERNAME :  ";
+        cin.ignore();
         while(true){
-            cin >> username;
+            getline(cin,username);
             if(username.size() < 3){
                 cout<<"USERNAME must atleast be 3 charachters long!\n"
                     <<"try again now :  ";
@@ -161,8 +162,9 @@ public:
             break;
         }
         cout << "Enter your PASSWORD :  ";
+        cin.ignore();
         while(true){
-            cin >> password;
+            getline(cin,password);
             if(password.size() < 6){
                 cout<<"PASSWORD must atleast be 6 charachters long!\n"
                     <<"try again now :  ";
@@ -177,7 +179,7 @@ public:
                 continue;
             }
             cout<<"reEnter your PASSWORD :  ";
-            cin >> pass2;
+            getline(cin,pass2);
             if(password != pass2){
                 cout<<"PASSWORDs Don't match!\n"
                     <<"try again now :  ";
@@ -201,15 +203,16 @@ class LogIn:public Account{
 public:
     LogIn(){
         cout<<"Enter your USERNAME :  ";
+        cin.ignore();
         while(true){
-            cin >> username;
+            getline(cin,username);
             if(!checkUserExist(username)){
                 cout<<"This username does not exist!\n"
                     <<"try again now :  ";
                 continue;
             }
             cout<<"Enter your PASSWORD :  ";
-            cin>>password;
+            getline(cin,password);
             if(!CheckAccountInfo(username,password)){
                 cout<<"wrong username or password !\n"
                     <<"try again now :  ";
@@ -880,12 +883,18 @@ bool isName(string s){
         if(!( isLetter(s[i]) || isNumber(s[i]) || s[i] == '.' )){
             return false;
         }
+        if(s[i] == ' '){
+            return false;
+        }
     }
     return true;
 }
 bool isPassword(string s){
    for(int i=0 ; i<s.size() ; i++){
         if(!( isLetter(s[i]) || isNumber(s[i]) || isSymbol(s[i]) || s[i] == '.' )){
+            return false;
+        }
+        if(s[i] == ' '){
             return false;
         }
     }
