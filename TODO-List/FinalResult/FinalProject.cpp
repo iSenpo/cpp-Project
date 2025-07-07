@@ -76,10 +76,12 @@ public:
             cin >> choice;
             switch(choice){
                 case (1):{
+                    system("cls");
                     ShowUsers();
                     break;
                 }
                 case (2):{
+                    system("cls");
                     cout<<"Enter an USERNAME :  ";
                     while(true){
                         string input;
@@ -98,10 +100,12 @@ public:
                     break;
                 }
                 case (3):{
+                    system("cls");
                     loop = false;
                     break;
                 }
                 case (0):{
+                    system("cls");
                     EXIT = true;
                     loop = false;
                     break;
@@ -824,22 +828,27 @@ void AdminMenu(){
             cin>>choice;
             switch(choice){
                 case (1):{
+                    system("cls");
                     List[0]->ShowItems();
                     break;
                 }
                 case (2):{
+                    system("cls");
                     List[1]->ShowItems();
                     break;
                 }
                 case (3):{
+                    system("cls");
                     List[2]->ShowItems();
                     break;
                 }
                 case (4):{
+                    system("cls");
                     loop = false;
                     break;
                 }
                 case (0):{
+                    system("cls");
                     EXIT = true;
                     loop = false;
                     break;
