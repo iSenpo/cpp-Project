@@ -1,7 +1,9 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <ctime>
 using namespace std;
+
 bool isLetter(char l){
     if(!((l >= 'a' && l <= 'z') || (l >= 'A' && l <= 'Z'))){
         return false;
@@ -251,4 +253,18 @@ int GetN2(string s){
 }
 int distance(string cord1,string cord2){
     return abs(GetN1(cord1) - GetN1(cord2)) + abs(GetN2(cord1) - GetN2(cord2));
+}
+int NumberOfPassangers(){
+    int i = 0;
+    ifstream file("CarRequest.txt",ios::in);
+    if(file.is_open()){
+        string name,Cord1,Cord2;
+        while( file >> name >> Cord1 >> Cord2){
+            i++;
+        }
+        file.close();
+    }else{
+        cerr<<"cant open file!\n";
+    }
+    return i;
 }

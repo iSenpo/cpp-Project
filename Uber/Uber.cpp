@@ -1,5 +1,4 @@
 #include "Filter.hpp"
-#include <ctime>
 
 bool EXIT = false;
 bool Disscount = false;
@@ -13,6 +12,7 @@ bool CheckUserExist(string username,string FileName);
 bool CheckInfo(string username,string password,string FileName);
 bool CheckCord(string s);
 int distance(string cord1,string cord2);
+int NumberOfPassangers();
 class UnderAgeDriver{};
 
 class Car{
@@ -206,8 +206,7 @@ public:
         }else{
             cerr<<"something went wrong! cant save data!\n";
         }
-    }
-    
+    }  
 };
 class SignIn:public Account{
 public:
@@ -374,10 +373,36 @@ public:
         }
     }
 };
+class Payment{
+private:
+    time_t now = time(0);
+    tm* hour = localtime(&now);
+    float price;
+public:
+    Payment(){}
+    float GetPassengerPrice(int distance){
+        if(hour->tm_hour > 0 && hour->tm_hour<6){
+            price = distance*2.5;
+            cout<<"you travel beteew 12 - 6 and your price is doubled!\n";
+        }
+        else{
+            price = distance*1.5;
+        }
+        if(Disscount){
+            price-= price*0.2;
+            cout<<"you got (20%) disscount!\n";
+            Disscount = false;
+        }
+        return price;
+    }
+    void Driver(){
+    }
+};
 class CarRequest{
 private:
     string CarModel;
     Account passanger;
+    Payment pay;
 public:
     CarRequest(){}
     CarRequest(Passanger& b):passanger(b){}
@@ -473,18 +498,19 @@ public:
                 cout<<"not a valid format!\n";
                 continue;
             }
-            if(passanger.GetBalance() < distance(inCord,fiCord) && !passanger.FirstTrip){
+            float price = pay.GetPassengerPrice(distance(inCord,fiCord));
+            if(passanger.GetBalance() < price && !passanger.FirstTrip){
                 cout<<"you need to increament your balance!!\n"
-                    <<"This travel cost you : "<<distance(inCord,fiCord)<<"$\n"
+                    <<"This travel cost you : "<<price<<"$\n"
                     <<"but you only have : "<< passanger.GetBalance()<<"$\n";
                 return; 
             }
             else{
                 if(!passanger.FirstTrip){
-                    passanger.DecreaseBalance(distance(inCord,fiCord));
-                    cout<<"This trip cost you : "<<distance(inCord,fiCord)<<"$\n";
+                    passanger.DecreaseBalance(price);
+                    cout<<"This trip cost you : "<<price<<"$\n";
                 }
-                else{cout<<"This trip cost you : "<<distance(inCord,fiCord)<<"$\n"
+                else{cout<<"This trip cost you : "<<price<<"$\n"
                     <<"But you payed 0$ because it was your first trip!\n";
                 }
             }
@@ -492,6 +518,7 @@ public:
                 <<"Ok.Searching for a Car Now!\n";
                 passanger.IncreasePoint();
                 passanger.FirstTrip = false;
+                ShowCars();
             break;
         }
         ofstream file("CarRequest.txt",ios::app);
@@ -502,26 +529,140 @@ public:
             cerr<<"cant open file!\n";
         }
     }
+    void ShowCars(){
+        int counter = 1;
+        string cars;
+        ifstream file("CarList.txt");
+        cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
+        if(file.is_open()){
+            file.seekg(0,ios::end);
+            if(file.tellg() == 0){
+                cout<<"No Car has signed up yet!\n";
+            }
+            file.seekg(0);
+            while(file >> cars){
+                cout<<counter<<"."<<cars<<"\n";
+                counter++;
+            }
+            file.close();
+            cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
+        }else{
+            cerr<<"cant open file!\n";
+        }
+    }
 };
 class Ride{
 private:
+    Account driver;
+    string name,inCord,fiCord;
+    time_t now = time(0);
+    tm* hour = localtime(&now);
 public:
-};
-class Payment{
-private:
-    CarRequest travel;
-public:
-    Payment(){}
-    void Passanger(){
+    Ride(Driver& d):driver(d){}
+    Ride(SignIn& d):driver(d){}
+    void RideMenu(){
+        bool loop = true;
+            while(loop){
+                cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n"
+                    <<"1.Show All Requests\n"
+                    <<"2.Choose a passanger\n"
+                    <<"3.Show balance\n"
+                    <<"4.Show my points\n"
+                    <<"0.EXIT\n"
+                    <<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
+                int choice;
+                cin>>choice;
+                switch(choice){
+                    case(1):{
+                        ShowList();
+                        break;
+                    }
+                    case(2):{
+                        cout<<"Which one based on numbers('-1' to go back '0' to see list)?  ";
+                        while(1){
+                            int n;
+                            cin>>n;
+                            if(n == -1){
+                                break;
+                            }
+                            if(n == 0){
+                                ShowList();
+                                cout<<"Which one based on numbers('-1' to go back '0' to see list)?  ";
+                                continue;
+                            }
+                            if(n>NumberOfPassangers() || n<-1){
+                                cout<<"invalid input!\n";
+                                break;
+                            }else{
+                                ChoosePassnger(n);
+                            }
+                        }
+                        break;
+                    }
+                    case(3):{
+                        driver.GetBalance();
+                        break;
+                    }
+                    case(4):{
+                        driver.GetPoints();
+                        break;
+                    }
+                    case(0):{
+                        loop = false;
+                        EXIT = true;
+                        break;
+                    }
+                    default:{
+                        cout<<"WTF\n";
+                        break;
+                    }
+                }
+            }
     }
-    void Driver(){
+    void ChoosePassnger(int a){
+        string name,inCord,fiCord;
+        int counter = 1;
+        ifstream file("CarRequest.txt");
+        if(file.is_open()){
+            string user,pass;
+            while( file >> name >> inCord >> fiCord){
+                    if(a == counter){
+                        break;
+                    }
+                counter++;
+                }
+            file.close();
+        }else{
+            cerr<<"cant open file!\n";
+        }
+    }
+    void ShowList(){
+        int counter = 1;
+        string name,inCord,fiCord;
+        ifstream file("CarRequest.txt");
+        if(file.is_open()){
+            cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
+            file.seekg(0,ios::end);
+            if(file.tellg() == 0){
+                cout<<"No passanger has signed up yet!\n";
+                file.close();
+            }
+            file.seekg(0);
+            while(file >> name >> inCord >> fiCord){
+                cout<<counter<<"."<<name<<" is wating in :"
+                <<inCord<<" and wants to go :"<<fiCord<<"\n";
+                counter++;
+            }
+            cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
+            file.close();
+        }else{
+            cerr<<"Cant open file and show list!\n";
+        }
     }
 };
 class MainMenu{
 public:
-    Payment Record;
-    MainMenu(){
-    }
+    MainMenu(){}
     void PassangerMenu(){
         cout<<"~ ~ ~ ~ ~ Passanger ~ ~ ~ ~ ~\n"
             <<"1.signUp (create new account)\n"
@@ -591,12 +732,14 @@ public:
                     }
                     cout<<"~ ~ ~ ~ Account Successfully Created ~ ~ ~ ~";
                     account.SaveData();
-
+                    Ride _Ride(account);
+                    _Ride.RideMenu();
                     break;
                 }
                 case(2):{
                     SignIn account("DriverAccounts.txt");
-
+                    Ride _Ride(account);
+                    _Ride.RideMenu();
                     break;
                 }
                 case(0):{
