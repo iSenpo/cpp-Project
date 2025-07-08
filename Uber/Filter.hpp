@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <string>
 using namespace std;
 bool isLetter(char l){
     if(!((l >= 'a' && l <= 'z') || (l >= 'A' && l <= 'Z'))){
@@ -222,4 +223,32 @@ bool CheckCord(string s){
         return false;
     }
     return true;
+}
+int GetN1(string s){
+    int i=1;
+    string n1;
+    while(s[i] != ','){
+        n1+=s[i];
+        i++;
+    }
+    return stoi(n1);
+}
+int GetN2(string s){
+    int i =0;
+    string n2;
+    for(i; i<s.size()-2;i++){
+        if(s[i] == ','){
+            i++;
+            break;
+        }
+    }
+
+    while(s[i] != ')'){
+        n2+=s[i];
+        i++;
+    }
+    return stoi(n2);
+}
+int distance(string cord1,string cord2){
+    return abs(GetN1(cord1) - GetN1(cord2)) + abs(GetN2(cord1) - GetN2(cord2));
 }

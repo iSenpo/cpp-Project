@@ -1,5 +1,4 @@
 #include "Filter.hpp"
-#include <string>
 #include <ctime>
 
 bool EXIT = false;
@@ -13,6 +12,7 @@ bool isPhoneNumber(string s);
 bool CheckUserExist(string username,string FileName);
 bool CheckInfo(string username,string password,string FileName);
 bool CheckCord(string s);
+int distance(string cord1,string cord2);
 class UnderAgeDriver{};
 
 class Car{
@@ -149,13 +149,19 @@ public:
         return balance;
     }
     void IncreaseBalance(float a){
-        balance+=a;
+        balance += a;
+    }
+    void IncreasePoint(){
+        point ++;
     }
     int GetPoints() const{
         return point;
     }
     string GetUsername() const{
         return username;
+    }
+    void DecreaseBalance(float a){
+        balance -= a;
     }
 };
 class Passanger:public Account{
@@ -373,6 +379,7 @@ private:
     string CarModel;
     Account passanger;
 public:
+    CarRequest(){}
     CarRequest(Passanger& b):passanger(b){}
     CarRequest(SignIn& b):passanger(b){}
     void CarRequestMenu(){
@@ -420,17 +427,16 @@ public:
         }
     }
     void GetCar(){
-        string cord,code,s;
+        string inCord,fiCord,code,s;
         if(passanger.FirstTrip){
             cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n"
                 <<"your travel will be free becasue of First Travel!\n";
-            passanger.FirstTrip = false;
         }
         else{
             cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n"
             <<"Enter your DisscountCode if you have (type -1 if u dont) :  ";
             cin>>code;
-            if(cord == "-1"){
+            if(code == "-1"){
             }
             else{
                 ifstream file("DisscountCodes.txt");
@@ -454,29 +460,66 @@ public:
         cin.ignore();
         while(1){
             cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n"
-                <<"Enter your Cordination like (x,y) :  ";
-            getline(cin,cord);
-            if(!CheckCord(cord)){
+                <<"Enter your 'starting' Cordination like (x,y) :  ";
+            getline(cin,inCord);
+            if(!CheckCord(inCord)){
                 cout<<"not a valid format!\n";
                 continue;
             }
+            cout<<"Enter your 'Final' Cordination like (x,y) :  ";
+            getline(cin,fiCord);
+            cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
+            if(!CheckCord(fiCord)){
+                cout<<"not a valid format!\n";
+                continue;
+            }
+            if(passanger.GetBalance() < distance(inCord,fiCord) && !passanger.FirstTrip){
+                cout<<"you need to increament your balance!!\n"
+                    <<"This travel cost you : "<<distance(inCord,fiCord)<<"$\n"
+                    <<"but you only have : "<< passanger.GetBalance()<<"$\n";
+                return; 
+            }
+            else{
+                if(!passanger.FirstTrip){
+                    passanger.DecreaseBalance(distance(inCord,fiCord));
+                    cout<<"This trip cost you : "<<distance(inCord,fiCord)<<"$\n";
+                }
+                else{cout<<"This trip cost you : "<<distance(inCord,fiCord)<<"$\n"
+                    <<"But you payed 0$ because it was your first trip!\n";
+                }
+            }
             cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n"
                 <<"Ok.Searching for a Car Now!\n";
+                passanger.IncreasePoint();
+                passanger.FirstTrip = false;
             break;
         }
         ofstream file("CarRequest.txt",ios::app);
         if(file.is_open()){
-            file<<passanger.GetUsername()<<" "<<cord<<"\n";
+            file<<passanger.GetUsername()<<" "<<inCord<<" "<<fiCord<<"\n";
             file.close();
         }else{
             cerr<<"cant open file!\n";
         }
     }
 };
-class Ride{};
-class Payment{};
+class Ride{
+private:
+public:
+};
+class Payment{
+private:
+    CarRequest travel;
+public:
+    Payment(){}
+    void Passanger(){
+    }
+    void Driver(){
+    }
+};
 class MainMenu{
 public:
+    Payment Record;
     MainMenu(){
     }
     void PassangerMenu(){
@@ -548,10 +591,12 @@ public:
                     }
                     cout<<"~ ~ ~ ~ Account Successfully Created ~ ~ ~ ~";
                     account.SaveData();
+
                     break;
                 }
                 case(2):{
                     SignIn account("DriverAccounts.txt");
+
                     break;
                 }
                 case(0):{
