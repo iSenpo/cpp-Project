@@ -243,6 +243,130 @@ public:
             }
         }
     }
+ void ShowPassangers(){
+        string user,pass;
+        int counter = 1;
+        ifstream file("PassangerAccounts.txt");
+        if(file.is_open()){
+            file.seekg(0,ios::end);
+            if(file.tellg() == 0){
+                cout<<"No passanger has signed up yet!\n";
+                file.close();
+            }
+            file.seekg(0);
+            cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n"
+                <<"USERNAME  |  PASSWORD\n";
+            while(file >> user >> pass){
+                cout<<counter<<"."<<user << " "<< pass<<"\n";
+                counter++;
+            }
+            cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
+            file.close();
+        }else{
+            cerr<<"can't open file!!\n";
+        }
+    }
+    void ShowDrivers(){
+        int counter = 1;
+        string user,pass;
+        ifstream file("DriverAccounts.txt");
+        if(file.is_open()){
+            file.seekg(0,ios::end);
+            if(file.tellg() == 0){
+                cout<<"No Driver has signed up yet!\n";
+                file.close();
+            }
+            file.seekg(0);
+            cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n"
+                <<"USERNAME  |  PASSWORD\n";
+            while(file >> user >> pass){
+                cout<<counter<<"."<<user << " "<< pass<<"\n";
+                counter++;
+            }
+            cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
+            file.close();
+        }else{
+            cerr<<"can't open file!!\n";
+        }
+    }
+    void ShowDisscountList(){
+        int counter = 1;
+        string codes;
+        ifstream file("DisscountCodes.txt");
+        if(file.is_open()){
+            file.seekg(0,ios::end);
+            if(file.tellg() == 0){
+                cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n"
+                    <<"Your List is Empty!\n";
+                file.close();
+            }
+            file.seekg(0);
+            cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
+            while(file >> codes){
+                cout<<counter<<"."<<codes<<"\n";
+                counter++;
+            }
+            cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
+            file.close();
+        }else{
+            cerr<<"can't open file!!\n";
+        }
+    }
+    void AddDisscount(){
+        int counter = 1;
+        string codes;
+        ofstream file("DisscountCodes.txt",ios::app);
+        if(file.is_open()){
+            cout<<"Enter your Disscount Code in 1 word :  ";
+            cin>>codes;
+            file << codes<< "\n";
+            cout<<"~ ~ ~ Disscount Code successfully Added ~ ~ ~\n";
+            file.close();
+        }else{
+            cerr<<"can't open the file!!\n";
+        }
+    }
+    void DeleteDisscount(){
+        string s;
+        int line,counter = 0;
+        cout<<"Which TASK you want to DELETE?('0' to see list / '-1' to go back)\n";
+        cin >> line;
+        if(line == 0){
+            this->ShowDisscountList();
+            cout<<"Which TASK you want to DELETE?('0' to see list / '-1' to go back)\n";
+            cin >> line;
+        }
+        if(line == -1){
+
+        }
+        else{
+            ifstream fileIn("DisscountCodes.txt");
+            ofstream tempOut("temp.txt");
+            if(fileIn.is_open() && tempOut.is_open()){
+                while(getline(fileIn,s)){
+                    counter++;
+                    if(line != counter){
+                        tempOut << s << "\n";
+                    }
+                }
+                fileIn.close();
+                tempOut.close();
+            ifstream tempIn("temp.txt");
+            ofstream fileOut("DisscountCodes.txt");
+            while(getline(tempIn,s)){
+                fileOut << s << "\n";
+            }
+            cout<<"# # # Task succecfully deleted! # # #\n";
+            tempIn.close();
+            fileOut.close();
+            }
+            else{
+                cerr<<"Something went Wrong!\n";
+            }
+        ofstream clearTemp("temp.txt",ios::trunc);
+        clearTemp.close();
+        }
+    }
 };
 class CarRequest{
 private:
@@ -390,6 +514,7 @@ public:
                     break;
                 }
                 default:{
+                    cout<<"invalid Option! try again:  \n";
                     break;
                 }
             }
@@ -435,6 +560,7 @@ public:
                     break;
                 }
                 default:{
+                    cout<<"invalid Option! try again:  \n";
                     break;
                 }
             }
@@ -459,23 +585,23 @@ public:
             cin>>choice;
             switch(choice){
                 case(1):{
-                    ShowPassangers();
+                    admin.ShowPassangers();
                     break;
                 }
                 case(2):{
-                    ShowDrivers();
+                    admin.ShowDrivers();
                     break;
                 }
                 case(3):{
-                    ShowDisscountList();
+                    admin.ShowDisscountList();
                     break;
                 }
                 case(4):{
-                    AddDisscount();
+                    admin.AddDisscount();
                     break;
                 }
                 case(5):{
-                    DeleteDisscount();
+                    admin.DeleteDisscount();
                     break;
                 }
                 case(0):{
@@ -488,130 +614,6 @@ public:
                     break;
                 }
             }
-        }
-    }
-    void ShowPassangers(){
-        string user,pass;
-        int counter = 1;
-        ifstream file("PassangerAccounts.txt");
-        if(file.is_open()){
-            file.seekg(0,ios::end);
-            if(file.tellg() == 0){
-                cout<<"No passanger has signed up yet!\n";
-                file.close();
-            }
-            file.seekg(0);
-            cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n"
-                <<"USERNAME  |  PASSWORD\n";
-            while(file >> user >> pass){
-                cout<<counter<<"."<<user << " "<< pass<<"\n";
-                counter++;
-            }
-            cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
-            file.close();
-        }else{
-            cerr<<"can't open file!!\n";
-        }
-    }
-    void ShowDrivers(){
-        int counter = 1;
-        string user,pass;
-        ifstream file("DriverAccounts.txt");
-        if(file.is_open()){
-            file.seekg(0,ios::end);
-            if(file.tellg() == 0){
-                cout<<"No Driver has signed up yet!\n";
-                file.close();
-            }
-            file.seekg(0);
-            cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n"
-                <<"USERNAME  |  PASSWORD\n";
-            while(file >> user >> pass){
-                cout<<counter<<"."<<user << " "<< pass<<"\n";
-                counter++;
-            }
-            cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
-            file.close();
-        }else{
-            cerr<<"can't open file!!\n";
-        }
-    }
-    void ShowDisscountList(){
-        int counter = 1;
-        string codes;
-        ifstream file("DisscountCodes.txt");
-        if(file.is_open()){
-            file.seekg(0,ios::end);
-            if(file.tellg() == 0){
-                cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n"
-                    <<"Your List is Empty!\n";
-                file.close();
-            }
-            file.seekg(0);
-            cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
-            while(file >> codes){
-                cout<<counter<<"."<<codes<<"\n";
-                counter++;
-            }
-            cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
-            file.close();
-        }else{
-            cerr<<"can't open file!!\n";
-        }
-    }
-    void AddDisscount(){
-        int counter = 1;
-        string codes;
-        ofstream file("DisscountCodes.txt",ios::app);
-        if(file.is_open()){
-            cout<<"Enter your Disscount Code in 1 word :  ";
-            cin>>codes;
-            file << codes<< "\n";
-            cout<<"~ ~ ~ Disscount Code successfully Added ~ ~ ~\n";
-            file.close();
-        }else{
-            cerr<<"can't open the file!!\n";
-        }
-    }
-    void DeleteDisscount(){
-        string s;
-        int line,counter = 0;
-        cout<<"Which TASK you want to DELETE?('0' to see list / '-1' to go back)\n";
-        cin >> line;
-        if(line == 0){
-            this->ShowDisscountList();
-            cout<<"Which TASK you want to DELETE?('0' to see list / '-1' to go back)\n";
-            cin >> line;
-        }
-        if(line == -1){
-
-        }
-        else{
-            ifstream fileIn("DisscountCodes.txt");
-            ofstream tempOut("temp.txt");
-            if(fileIn.is_open() && tempOut.is_open()){
-                while(getline(fileIn,s)){
-                    counter++;
-                    if(line != counter){
-                        tempOut << s << "\n";
-                    }
-                }
-                fileIn.close();
-                tempOut.close();
-            ifstream tempIn("temp.txt");
-            ofstream fileOut("DisscountCodes.txt");
-            while(getline(tempIn,s)){
-                fileOut << s << "\n";
-            }
-            cout<<"# # # Task succecfully deleted! # # #\n";
-            tempIn.close();
-            fileOut.close();
-            }
-            else{
-                cerr<<"Something went Wrong!\n";
-            }
-        ofstream clearTemp("temp.txt",ios::trunc);
-        clearTemp.close();
         }
     }
 };
