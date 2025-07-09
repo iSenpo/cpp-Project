@@ -23,16 +23,26 @@ private:
     string pelak;
 public:
     Car(){}
-    Car(string FirstName,string LastName){
+    void GetName(string FirstName,string LastName){
         Owner = FirstName+" "+LastName;
     }
     void SetCarInfo(){
-        cout<<"Enter your Car Name and Model :  ";
-        getline(cin,Model);
+        cout<<"Enter your Car Name :  ";
+        cin>>Model;
+        cin.ignore();
         cout<<"Enter your Car Color :  ";
-        getline(cin,color);
-        cout<<"Enter your Car pelak :  ";
-        getline(cin,pelak);
+        cin>>color;
+        cin.ignore();
+        cout<<"Enter your Car pelak like(33B88877):  ";
+        cin>>pelak;
+        cin.ignore();
+        ofstream file("CarList.txt",ios::app);
+        if(file.is_open()){
+            file << Owner << " "<< Model <<" "<< color <<" "<< pelak <<"\n";
+            file.close();
+        }else{
+            cerr<<"Cant save data!\n";
+        }
     }
 };
 
@@ -190,6 +200,7 @@ public:
     Driver(){}
     void DriverRegister(){
         int age;
+        car.GetName(FirstName,LastName);
         car.SetCarInfo();
         cout<<"Enter your age :  ";
         cin>>age;
@@ -401,7 +412,6 @@ public:
 };
 class CarRequest{
 private:
-    string CarModel;
     Account passanger;
     Payment pay;
 public:
@@ -532,21 +542,22 @@ public:
     }
     void ShowCars(){
         int counter = 1;
-        string cars;
+        string FirstName,LastName,model,color,pelak;
         ifstream file("CarList.txt");
-        cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
+        cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n\n";
         if(file.is_open()){
             file.seekg(0,ios::end);
             if(file.tellg() == 0){
                 cout<<"No Car has signed up yet!\n";
             }
             file.seekg(0);
-            while(file >> cars){
-                cout<<counter<<"."<<cars<<"\n";
+            while(file >> FirstName >> LastName >> model >> color >> pelak){
+                cout<<counter<<"."<<FirstName<<" "<<LastName<<" | "<<"car model : "<<model
+                <<" | " << "color : "<< color <<" | "<<"pelak : "<<pelak<<"\n\n";
                 counter++;
             }
             file.close();
-            cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
+            cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
         }else{
             cerr<<"cant open file!\n";
         }
