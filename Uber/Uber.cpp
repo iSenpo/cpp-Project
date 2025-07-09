@@ -395,7 +395,8 @@ public:
         }
         return price;
     }
-    void Driver(){
+    float DriverPay(int distance){
+        return distance*1.5;
     }
 };
 class CarRequest{
@@ -556,7 +557,8 @@ private:
     Account driver;
     string name,inCord,fiCord;
     time_t now = time(0);
-    tm* hour = localtime(&now);
+    tm* ridetime = localtime(&now);
+    Payment pay;
 public:
     Ride(Driver& d):driver(d){}
     Ride(SignIn& d):driver(d){}
@@ -595,16 +597,18 @@ public:
                                 break;
                             }else{
                                 ChoosePassnger(n);
+                                DeleteCarRequest(n);
+                                break;
                             }
                         }
                         break;
                     }
                     case(3):{
-                        driver.GetBalance();
+                        cout<<"your balance is : "<<driver.GetBalance()<<"$\n";
                         break;
                     }
                     case(4):{
-                        driver.GetPoints();
+                         cout<<"your point is : "<<driver.GetPoints()<<"\n";
                         break;
                     }
                     case(0):{
@@ -620,7 +624,6 @@ public:
             }
     }
     void ChoosePassnger(int a){
-        string name,inCord,fiCord;
         int counter = 1;
         ifstream file("CarRequest.txt");
         if(file.is_open()){
@@ -635,6 +638,52 @@ public:
         }else{
             cerr<<"cant open file!\n";
         }
+        ShowRecord();
+    }
+    void ShowRecord(){
+        int length = distance(inCord,fiCord);
+        time_t StartTime = time(nullptr);
+        time_t EndTime = StartTime + length*60;
+        cout<<"~ - ~ - ~ - ~ - ~ Travel Record - ~ - ~ - ~ - ~ - ~\n"
+            <<"Passanger name :    "<<name<<"\n\n"
+            <<"Starting time :     "<<ctime(&StartTime)<<"\n"
+            <<"Ending time :    "<<ctime(&EndTime)<<"\n"
+            <<"distance traveled :     "<<length<<"km\n\n"
+            <<"you earned : "<<pay.DriverPay(length)<<"$ from this trip\n\n"
+            <<"yor points increased by : 1\n\n"
+            <<"you are now an active driver!\n\n"
+            <<"thank you for your service\n\n"
+            "~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~ - ~\n";
+            driver.IncreaseBalance(pay.DriverPay(length));
+            driver.IncreasePoint();
+    }
+    void DeleteCarRequest(int line){
+        string s;
+        int counter = 0;
+        ifstream fileIn("CarRequest.txt");
+        ofstream tempOut("temp.txt");
+        if(fileIn.is_open() && tempOut.is_open()){
+            while(getline(fileIn,s)){
+                counter++;
+                if(line != counter){
+                    tempOut << s << "\n";
+                }
+            }
+            fileIn.close();
+            tempOut.close();
+            ifstream tempIn("temp.txt");
+            ofstream fileOut("CarRequest.txt");
+            while(getline(tempIn,s)){
+                fileOut << s << "\n";
+            }
+            tempIn.close();
+            fileOut.close();
+        }
+        else{
+             cerr<<"Something went Wrong!\n";
+        }
+        ofstream clearTemp("temp.txt",ios::trunc);
+        clearTemp.close();
     }
     void ShowList(){
         int counter = 1;
@@ -650,7 +699,8 @@ public:
             file.seekg(0);
             while(file >> name >> inCord >> fiCord){
                 cout<<counter<<"."<<name<<" is wating in :"
-                <<inCord<<" and wants to go :"<<fiCord<<"\n";
+                <<inCord<<" and wants to go :"<<fiCord<<" ---> its a "
+                <<distance(inCord,fiCord)<<"km ride \n";
                 counter++;
             }
             cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
