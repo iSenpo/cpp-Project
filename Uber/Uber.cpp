@@ -56,7 +56,6 @@ protected:
     string PhoneNumber;
     int point = 0;
     float balance = 0;
-    int x = 0,y = 0;
 public:
     bool FirstTrip = true;
  void CreateAccount(string FileName){
@@ -176,7 +175,6 @@ public:
 };
 class Passanger:public Account{
 private:
-    bool FirstTrip;
 public:
     Passanger(){
         balance = 0;
@@ -432,14 +430,17 @@ public:
             cin>>choice;
             switch(choice){
                 case(1):{
+                    system("cls");
                     GetCar();
                     break;
                 }
                 case(2):{
+                    system("cls");
                     cout<<"your balance is : "<<passanger.GetBalance()<<"$\n";
                     break;
                 }
                 case(3):{
+                    system("cls");
                     cout<<"how much you want to increase?  ";
                     float increase;
                     cin>>increase;
@@ -447,10 +448,12 @@ public:
                     break;
                 }
                 case(4):{
+                    system("cls");
                     cout<<"your point is : "<<passanger.GetPoints()<<"\n";
                     break;
                 }
                 case(0):{
+                    system("cls");
                     loop = false;
                     EXIT = true;
                     break;
@@ -587,10 +590,12 @@ public:
                 cin>>choice;
                 switch(choice){
                     case(1):{
+                        system("cls");
                         ShowList();
                         break;
                     }
                     case(2):{
+                        system("cls");
                         cout<<"Which one based on numbers('-1' to go back '0' to see list)?  ";
                         while(1){
                             int n;
@@ -599,6 +604,7 @@ public:
                                 break;
                             }
                             if(n == 0){
+                                system("cls");
                                 ShowList();
                                 cout<<"Which one based on numbers('-1' to go back '0' to see list)?  ";
                                 continue;
@@ -607,6 +613,7 @@ public:
                                 cout<<"invalid input!\n";
                                 break;
                             }else{
+                                system("cls");
                                 ChoosePassnger(n);
                                 DeleteCarRequest(n);
                                 break;
@@ -615,14 +622,17 @@ public:
                         break;
                     }
                     case(3):{
+                        system("cls");
                         cout<<"your balance is : "<<driver.GetBalance()<<"$\n";
                         break;
                     }
                     case(4):{
+                        system("cls");
                          cout<<"your point is : "<<driver.GetPoints()<<"\n";
                         break;
                     }
                     case(0):{
+                        system("cls");
                         loop = false;
                         EXIT = true;
                         break;
@@ -739,6 +749,7 @@ public:
             cin>>choice;
             switch(choice){
                 case(1):{
+                    system("cls");
                     Passanger account;
                     account.CreateAccount("PassangerAccounts.txt");
                     cout<<"~ ~ ~ ~ Account Successfully Created ~ ~ ~ ~";
@@ -748,12 +759,14 @@ public:
                     break;
                 }
                 case(2):{
+                    system("cls");
                     SignIn account("PassangerAccounts.txt");
                     CarRequest _CarRequest(account);
                     _CarRequest.CarRequestMenu();
                     break;
                 }
                 case(0):{
+                    system("cls");
                     loop = false;
                     EXIT = true;
                     break;
@@ -780,6 +793,7 @@ public:
             cin>>choice;
             switch(choice){
                 case(1):{
+                    system("cls");
                     Driver account;
                     account.CreateAccount("DriverAccounts.txt");
                     try{
@@ -798,12 +812,14 @@ public:
                     break;
                 }
                 case(2):{
+                    system("cls");
                     SignIn account("DriverAccounts.txt");
                     Ride _Ride(account);
                     _Ride.RideMenu();
                     break;
                 }
                 case(0):{
+                    system("cls");
                     EXIT = true;
                     loop = false;
                     break;
@@ -834,26 +850,32 @@ public:
             cin>>choice;
             switch(choice){
                 case(1):{
+                    system("cls");
                     admin.ShowPassangers();
                     break;
                 }
                 case(2):{
+                    system("cls");
                     admin.ShowDrivers();
                     break;
                 }
                 case(3):{
+                    system("cls");
                     admin.ShowDisscountList();
                     break;
                 }
                 case(4):{
+                    system("cls");
                     admin.AddDisscount();
                     break;
                 }
                 case(5):{
+                    system("cls");
                     admin.DeleteDisscount();
                     break;
                 }
                 case(0):{
+                    system("cls");
                     loop = false;
                     EXIT = true;
                     break;
@@ -879,18 +901,22 @@ int main(){
         cin>>choice;
         switch(choice){
             case(1):{
+                system("cls");
                 start.PassangerMenu();
                 break;
             }
             case(2):{
+                system("cls");
                 start.DriverMenu();
                 break;
             }
             case(3):{
+                system("cls");
                 start.AdminMenu();
                 break;
             }
             case(0):{
+                system("cls");
                 EXIT = true;
                 cout<<"closing program!  bYe bYe";
                 break;
