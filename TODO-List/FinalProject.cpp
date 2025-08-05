@@ -1,9 +1,4 @@
-#include <iostream>
-#include <fstream>
-#include <ctime>
-#include <bits/stdc++.h>
-
-using namespace std;
+#include "functions.hpp"
 
 string USERNAME;
 bool EXIT = false;
@@ -428,7 +423,29 @@ public:
 class Reminder:public TaskBase{
 private:
     time_t now = time(nullptr);
-    int hour=0 , minute=0 , second=0;
+    int day;
+    int hour;
+    int minute;
+    void RemainingTime(int a){
+        day = 0;
+        hour = 0;
+        minute = 0;
+        now = time(nullptr);
+        a = now - a;
+        while(a >= 88400){
+            a-= 88400;
+            day++;
+        }
+        while(a >= 3600){
+            a-=3600;
+            hour++;
+        }
+        while(a >= 60){
+            a -= 60;
+            minute++;
+        }
+        cout << " | Days : "<<day << " Hours : "<<hour << " Minutes : "<< minute << " Seconds : " << a << endl;
+    }
 public:
     string t,s;
     Reminder(){}
@@ -489,8 +506,8 @@ public:
             cout<<"Enter your task : \n";
             cin.ignore();
             getline(cin,t);
-            file << t << "\n";
-            cout<< "~ ~ Task Succecfully added ~ ~\n";
+            file << now << "|" << t << "\n";
+            cout<< "~ ~ Reminder Succecfully added ~ ~\n";
         }
         file.close();
     }
@@ -508,17 +525,21 @@ public:
             }
             file.seekg(0);
             while(getline(file,t)){
-                if(t[t.size()-1] == '1'){
-                    cout<<ul<<".[";
-                    for(int i = 0; i < t.size()-2 ;i++){
-                       cout<<t[i];
+                bool swich = false;
+                string n;
+                for(int i = 0 ; i < t.size() ; i++){
+                    if(t[i] == '|'){
+                        swich = true;
+                        continue;
                     }
-                    cout<<"] Done.\n";
-                    ul++;
-                    continue;
+                    if(!swich){
+                        n+=t[i];
+                    }
+                    else{
+                        cout << t[i];
+                    }
                 }
-                cout<<ul<<"."<<t<<"\n";
-                ul++;  
+                RemainingTime(stoi(n));                
             }
             cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
         }
@@ -565,35 +586,6 @@ public:
         }
     }
     void MarkCompleted(int a) override{
-        int counter = 1;
-        ifstream fileIn(USERNAME + "_TodoList.txt");
-        ofstream tempOut("temp.txt");
-            if(fileIn.is_open() && tempOut.is_open()){
-                while(getline(fileIn,s)){
-                        tempOut << s << "\n";
-                }
-                fileIn.close();
-                tempOut.close();
-            ifstream tempIn("temp.txt");
-            ofstream fileOut(USERNAME + "_TodoList.txt");
-            while(getline(tempIn,s)){
-                if(counter == a){
-                    fileOut << s << " 1\n";
-                    counter++;
-                    continue;
-                }
-                fileOut << s << "\n";
-                counter++;
-            }
-            tempIn.close();
-            fileOut.close();
-            }
-            else{
-                cerr<<"Something went Wrong!\n";
-            }
-        ofstream clearTemp("temp.txt",ios::trunc);
-        clearTemp.close();
-       cout << "~ ~ Succecfuly marked as Completed ~ ~\n";
     }
 };
 class ShopList:public TaskBase{
@@ -869,49 +861,6 @@ void AdminMenu(){
     delete List[2];
 }
 };
-bool isLetter(char l){
-    if(!((l >= 'a' && l <= 'z') || (l >= 'A' && l <= 'Z'))){
-        return false;
-    }
-    return true;
-}
-bool isNumber(char n){
-    if(!(n >= '0' && n <= '9') ){
-        return false;
-    }
-    return true;
-}
-bool isSymbol(char s){
-    if(!(s == '!' || s <= '@' || s <= '#' || s <= '$' || s <= '*' || s <= '&')){
-        return false;
-    }
-    return true;
-}
-bool isName(string s){
-    if(!isLetter(s[0])){
-        return false;
-    }
-    for(int i=0 ; i<s.size() ; i++){
-        if(!( isLetter(s[i]) || isNumber(s[i]) || s[i] == '.' )){
-            return false;
-        }
-        if(s[i] == ' '){
-            return false;
-        }
-    }
-    return true;
-}
-bool isPassword(string s){
-   for(int i=0 ; i<s.size() ; i++){
-        if(!( isLetter(s[i]) || isNumber(s[i]) || isSymbol(s[i]) || s[i] == '.' )){
-            return false;
-        }
-        if(s[i] == ' '){
-            return false;
-        }
-    }
-    return true; 
-}
 int main(){
     Account* account;
     MainMenu start;
