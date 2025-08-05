@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <ctime>
+#include <bits/stdc++.h>
+
 using namespace std;
 
 string USERNAME;
@@ -361,7 +363,7 @@ public:
             cin >> line;
         }
         if(line == -1){
-
+            system("cls");
         }
         else{
             ifstream fileIn(USERNAME + "_TodoList.txt");
@@ -532,6 +534,7 @@ public:
             cin >> line;
         }
         if(line == -1){
+            system("cls");
         }
         else{
             ifstream fileIn(USERNAME + "_Reminder.txt");
@@ -594,6 +597,8 @@ public:
     }
 };
 class ShopList:public TaskBase{
+private:
+    int price;
 public:
     string t,s;
     ShopList(){}
@@ -604,7 +609,7 @@ public:
                 <<"1.Show My Shopping List\n"
                 <<"2.Add a new Item to my List\n"
                 <<"3.Delete an existing Item\n"
-                <<"4.Mark a Task as Completed\n"
+                <<"4.All Price Sum\n"
                 <<"5.Back\n"
                 <<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
             int choice;
@@ -627,10 +632,7 @@ public:
                 }
                 case (4):{
                     system("cls");
-                    cout << "Which task have you Completed ?  ";
-                    int n;
-                    cin >> n;
-                    this->MarkCompleted(n);
+                    this->AllCosts();
                     break;
                 }
                 case (5):{
@@ -651,11 +653,13 @@ public:
             cerr<<"Something went wrong!\n";
         }
         else{
-            cout<<"Enter your task : \n";
+            cout<<"What you want to buy Next ?\n";
             cin.ignore();
             getline(cin,t);
-            file << t << "\n";
-            cout<< "~ ~ Task Succecfully added ~ ~\n";
+            cout<<"What's it's Price ?\n";
+            cin >> price ;
+            file << price << "|" << t << '\n';
+            cout<< "~ ~ ShopList Succecfully Updated ~ ~\n";
         }
         file.close();
     }
@@ -673,17 +677,24 @@ public:
             }
             file.seekg(0);
             while(getline(file,t)){
-                if(t[t.size()-1] == '1'){
-                    cout<<ul<<".[";
-                    for(int i = 0; i < t.size()-2 ;i++){
-                       cout<<t[i];
+                cout<<ul++<<".";
+                string n;
+                int cost;
+                bool start = false;
+                for(int i = 0 ; i < t.size() ; i++){
+                    if(t[i] == '|'){
+                        start = true;
+                        continue;
                     }
-                    cout<<"] Done.\n";
-                    ul++;
-                    continue;
+                    if(start){
+                        cout<<t[i];
+                    }
+                    else{
+                        n += t[i];
+                    }
                 }
-                cout<<ul<<"."<<t<<"\n";
-                ul++;  
+                cost = stoi(n);
+                cout << " : " << cost <<"$\n";
             }
             cout<<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
         }
@@ -699,6 +710,7 @@ public:
             cin >> line;
         }
         if(line == -1){
+            system("cls");
         }
         else{
             ifstream fileIn(USERNAME + "_ShopList.txt");
@@ -729,35 +741,26 @@ public:
         }
     }
     void MarkCompleted(int a) override{
-        int counter = 1;
-        ifstream fileIn(USERNAME + "_ShopList.txt");
-        ofstream tempOut("temp.txt");
-            if(fileIn.is_open() && tempOut.is_open()){
-                while(getline(fileIn,s)){
-                        tempOut << s << "\n";
+    }
+    void AllCosts(){
+        int cost = 0;
+        ifstream file ( USERNAME + "_ShopList.txt",ios::in);
+        if(file.is_open()){
+            while(getline(file , s)){
+                string n;
+                for(int i = 0 ; i < s.size() ; i++){
+                    if(s[i] == '|')
+                        break;
+                    n += s[i];
                 }
-            fileIn.close();
-            tempOut.close();
-            ifstream tempIn("temp.txt");
-            ofstream fileOut(USERNAME + "_ShopList.txt");
-            while(getline(tempIn,s)){
-                if(counter == a){
-                    fileOut << s << " 1\n";
-                    counter++;
-                    continue;
-                }
-            fileOut << s << "\n";
-            counter++;
+                cost += stoi(n);
             }
-            tempIn.close();
-            fileOut.close();
-            }
-            else{
-                cerr<<"Something went Wrong!\n";
-            }
-        ofstream clearTemp("temp.txt",ios::trunc);
-        clearTemp.close();
-        cout << "~ ~ Succecfuly marked as Completed ~ ~\n";
+            cout << "Your total COST is : "<<cost<<"$\n";
+            file.close();
+        }
+        else{
+            cerr<< "Cant Open File!\n";
+        }
     }
 };
 class MainMenu{
