@@ -456,8 +456,7 @@ public:
                 <<"1.Show My Reminder LIST\n"
                 <<"2.Add a new Reminder to my List\n"
                 <<"3.Delete an existing Reminder\n"
-                <<"4.Mark a Task as Completed\n"
-                <<"5.Back\n"
+                <<"4.Back\n"
                 <<"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
             int choice;
             cin>>choice;
@@ -478,14 +477,6 @@ public:
                     break;
                 }
                 case (4):{
-                    system("cls");
-                    cout << "Which task have you Completed ?  ";
-                    int n;
-                    cin >> n;
-                    this->MarkCompleted(n);
-                    break;
-                }
-                case (5):{
                     system("cls");
                     loop = false;
                     break;
